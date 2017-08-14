@@ -1,16 +1,21 @@
 package com.example.litain23.googlemap;
 
+import android.support.annotation.InterpolatorRes;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements
+        GoogleMap.OnMarkerClickListener,
+        OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -40,7 +45,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        LatLng SEOUL = new LatLng(37.56, 126.97);
+
+        Marker mSeoul = mMap.addMarker(new MarkerOptions()
+            .position(SEOUL)
+            .title("SEOUL"));
+        mSeoul.setTag(0);
+
+        Marker mSydney = mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mSydney.setTag(0);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        mMap.setOnMapClickListener((GoogleMap.OnMapClickListener) this);
+
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Integer clickCount = (Integer)marker.getTag();
+
+        if( clickCount != null){
+            clickCount = clickCount + 1;
+            marker.setTag(clickCount);
+            Toast.makeText(this,
+                    marker.getTitle() +
+                            " has been clicked " + clickCount + "times",
+                    Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 }
